@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Sidebar } from "@/components/Sidebar";
 
 export const RestaurantMenuHeader = () => {
@@ -41,7 +42,13 @@ export const RestaurantMenuHeader = () => {
                                 <div className="mx-auto mb-4 w-28 h-28 md:w-36 md:h-36 relative">
                                     <div className="absolute inset-0 bg-tastia-primary rounded-2xl rotate-45 border-4 border-tastia-secondary shadow-lg"></div>
                                     <div className="absolute inset-2 bg-tastia-dark rounded-xl rotate-45 flex items-center justify-center">
-                                        <span className="text-tastia-cream text-4xl md:text-5xl font-bold -rotate-45">🌶️</span>
+                                        <Image 
+                                            src="/tastia-logo.png" 
+                                            alt="Tastia Logo" 
+                                            width={80} 
+                                            height={80} 
+                                            className="object-contain -rotate-45"
+                                        />
                                     </div>
                                 </div>
                                 <h1 className="text-tastia-cream text-2xl md:text-3xl font-bold tracking-wide">تاستيا</h1>
