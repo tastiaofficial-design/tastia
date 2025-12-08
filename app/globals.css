@@ -1,0 +1,378 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tastia Theme - Warm, inviting colors inspired by the logo
+   * Primary: Burnt Orange/Rust (#B94A24)
+   * Secondary: Orange (#D4780E)
+   * Accent: Cream/Beige (#F0DFC0)
+   * Dark: Dark Brown/Black (#1A1008)
+   */
+  :root {
+    /* Tastia Brand Colors */
+    --tastia-primary: 15 70% 43%; /* #B94A24 - Burnt Orange */
+    --tastia-secondary: 30 88% 44%; /* #D4780E - Orange Border */
+    --tastia-accent: 37 56% 85%; /* #F0DFC0 - Cream/Beige */
+    --tastia-cream: 37 56% 85%; /* #F0DFC0 */
+    --tastia-dark: 25 40% 6%; /* #1A1008 - Dark Brown/Black */
+
+    /* Background: Dark theme */
+    --background: 25 40% 6%;
+    --foreground: 37 56% 85%;
+
+    /* Card: Uses primary burnt orange */
+    --card: 15 70% 43%;
+    --card-foreground: 37 56% 85%;
+    --card-border: 30 88% 44%;
+
+    --popover: 25 35% 10%;
+    --popover-foreground: 37 56% 85%;
+
+    /* Primary: Burnt Orange */
+    --primary: 15 70% 43%;
+    --primary-foreground: 37 56% 92%;
+
+    /* Secondary: Orange */
+    --secondary: 30 88% 44%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted glass effect */
+    --muted: 0 0% 100% / 0.08;
+    --muted-foreground: 37 56% 85% / 0.7;
+
+    /* Accent: Cream */
+    --accent: 37 56% 85%;
+    --accent-foreground: 25 40% 6%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 88% 44% / 0.3;
+    --input: 0 0% 100% / 0.15;
+    --ring: 30 88% 44%;
+
+    --radius: 1.5rem;
+
+    /* Status colors */
+    --status-active: 142 71% 45%;
+    --status-active-bg: 142 71% 45% / 0.18;
+    --status-inactive: 43 96% 56%;
+    --status-inactive-bg: 43 96% 56% / 0.18;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  }
+
+  /* Glass Morphism Components */
+  .glass-effect {
+    background: hsl(var(--tastia-primary));
+    backdrop-filter: blur(0px);
+    border: 2px solid hsl(var(--tastia-secondary));
+  }
+
+  .glass-notification {
+    background: hsl(var(--tastia-dark) / 0.9);
+    backdrop-filter: blur(40px);
+    border: 1px solid hsl(var(--tastia-secondary) / 0.3);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-sidebar {
+    background: linear-gradient(0deg, hsl(var(--tastia-dark) / 0.95) 0%, hsl(var(--tastia-dark) / 0.90) 100%);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid hsl(var(--tastia-secondary) / 0.3);
+  }
+
+  .glass-button {
+    background: linear-gradient(135deg, hsl(var(--tastia-primary)), hsl(var(--tastia-secondary)));
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--tastia-secondary));
+  }
+
+  /* Custom shadows and effects */
+  .tastia-shadow {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .inset-shadow {
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
+  }
+
+  .text-shadow {
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Arabic text styles */
+  .arabic-title {
+    font-family: 'Cairo', serif;
+    font-weight: 700;
+  }
+
+  .arabic-body {
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-family: 'Cairo', serif;
+    font-weight: 700;
+    color: hsl(var(--tastia-cream));
+  }
+
+  /* Responsive utilities */
+  .mobile-container {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .responsive-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Glass Shadow Effect for Menu Items */
+  .glass-shadow {
+    position: relative;
+  }
+
+  .glass-shadow::before {
+    content: '';
+    position: absolute;
+    inset: -26px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: inherit;
+    filter: blur(20px);
+    z-index: -1;
+  }
+
+  .menu-item {
+    @apply glass-effect rounded-3xl p-4 flex items-center gap-3 cursor-pointer hover:brightness-110 transition-all duration-200;
+  }
+
+  .menu-grid-item {
+    @apply glass-effect rounded-3xl p-4 cursor-pointer hover:brightness-110 transition-all duration-200;
+  }
+
+  /* Enhanced inner card animations */
+  .inner-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .inner-card-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 32px rgba(185, 74, 36, 0.3);
+  }
+
+  .inner-card-image {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .inner-card-image:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+  }
+
+  /* Subtle pulse animation for cards */
+  @keyframes subtle-pulse {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .inner-card-pulse {
+    animation: subtle-pulse 3s ease-in-out infinite;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-container {
+      max-width: 768px;
+      box-shadow: 0 0 50px rgba(185, 74, 36, 0.2);
+    }
+    
+    .responsive-container {
+      max-width: 768px;
+      padding: 0 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-container {
+      max-width: 1024px;
+      box-shadow: 0 0 80px rgba(185, 74, 36, 0.25);
+    }
+    
+    .responsive-container {
+      max-width: 1024px;
+      padding: 0 3rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .mobile-container {
+      max-width: 1280px;
+    }
+    
+    .responsive-container {
+      max-width: 1280px;
+      padding: 0 4rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    html {
+      font-size: 14px;
+    }
+
+    .glass-notification, .glass-effect, .glass-sidebar {
+      backdrop-filter: blur(20px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: 12px;
+    }
+
+    .glass-notification, .glass-effect, .glass-sidebar {
+      backdrop-filter: blur(15px);
+    }
+  }
+}
+
+/* Menu page animations */
+@keyframes fade-up-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.stagger-fade {
+  animation: fade-up-enter 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Restaurant Menu Styles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Restaurant menu item hover effects */
+.restaurant-menu-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.restaurant-menu-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(185, 74, 36, 0.3);
+}
+
+/* Category circle hover effects */
+.category-circle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(212, 120, 14, 0.4);
+}
+
+/* Order summary slide up animation */
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.order-summary-enter {
+  animation: slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating cart button styles */
+.floating-cart-button {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
+}
+
+/* Ensure menu items don't interfere with floating button */
+.menu-items-container {
+  padding-bottom: 6rem;
+}
+
+/* Admin styles */
+.admin-card {
+  background: hsl(var(--tastia-dark));
+  border: 1px solid hsl(var(--tastia-secondary) / 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.admin-input {
+  background: hsl(var(--tastia-dark));
+  border: 1px solid hsl(var(--tastia-secondary) / 0.3);
+  color: hsl(var(--tastia-cream));
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: hsl(var(--tastia-secondary));
+  box-shadow: 0 0 0 2px hsl(var(--tastia-secondary) / 0.2);
+}
+
+.admin-button {
+  background: linear-gradient(135deg, hsl(var(--tastia-primary)), hsl(var(--tastia-secondary)));
+  color: hsl(var(--tastia-cream));
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.admin-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
