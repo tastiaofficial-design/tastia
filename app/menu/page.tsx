@@ -275,21 +275,33 @@ export default function Menu() {
                             </div>
                         </motion.div>
 
-                        {/* Menu Items */}
+                        {/* Menu Items with background */}
                         <motion.div
                             key={`${selectedCategory ?? 'all'}-${searchQuery}-${viewMode}`}
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
                         >
-                            <MenuItemsList
-                                items={filteredMenuItems}
-                                onAddToCart={handleItemClick}
-                                categories={categories}
-                                showGrouped={selectedCategory === null && !searchQuery.trim()}
-                                selectedCategory={selectedCategory}
-                                viewMode={viewMode}
-                            />
+                            <div
+                                className="rounded-3xl overflow-hidden"
+                                style={{
+                                    backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                }}
+                            >
+                                <div className="backdrop-blur-sm bg-tastia-dark/70">
+                                    <MenuItemsList
+                                        items={filteredMenuItems}
+                                        onAddToCart={handleItemClick}
+                                        categories={categories}
+                                        showGrouped={selectedCategory === null && !searchQuery.trim()}
+                                        selectedCategory={selectedCategory}
+                                        viewMode={viewMode}
+                                    />
+                                </div>
+                            </div>
                         </motion.div>
                     </motion.div>
                 </ErrorBoundary>
