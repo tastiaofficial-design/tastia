@@ -283,15 +283,15 @@ export default function Menu() {
                             transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
                         >
                             <div
-                                className="rounded-3xl overflow-hidden"
+                                className="rounded-3xl overflow-hidden bg-tastia-dark"
                                 style={{
-                                    backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
+                                    backgroundImage: 'url(/Restaurant_Aesthetic_food_Red_Wallpaper_4-removebg-preview.webp)',
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     backgroundRepeat: 'no-repeat',
                                 }}
                             >
-                                <div className="backdrop-blur-sm bg-tastia-dark/70">
+                                <div className="backdrop-blur-sm bg-tastia-dark/85">
                                     <MenuItemsList
                                         items={filteredMenuItems}
                                         onAddToCart={handleItemClick}
