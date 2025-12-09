@@ -285,13 +285,13 @@ export default function Menu() {
                             <div
                                 className="rounded-3xl overflow-hidden bg-tastia-dark"
                                 style={{
-                                    backgroundImage: 'url(/Restaurant_Aesthetic_food_Red_Wallpaper_4-removebg-preview.webp)',
+                                    backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     backgroundRepeat: 'no-repeat',
                                 }}
                             >
-                                <div className="backdrop-blur-sm bg-tastia-dark/85">
+                                <div className="md:backdrop-blur-sm md:bg-tastia-dark/85">
                                     <MenuItemsList
                                         items={filteredMenuItems}
                                         onAddToCart={handleItemClick}
