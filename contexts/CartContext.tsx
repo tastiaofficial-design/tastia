@@ -18,6 +18,7 @@ interface CartState {
     isOpen: boolean;
     totalItems: number;
     totalPrice: number;
+    tips: number;
 }
 
 type CartAction =
@@ -27,13 +28,15 @@ type CartAction =
     | { type: 'CLEAR_CART' }
     | { type: 'TOGGLE_CART' }
     | { type: 'SET_CART_OPEN'; payload: boolean }
-    | { type: 'LOAD_CART'; payload: CartItem[] };
+    | { type: 'LOAD_CART'; payload: CartItem[] }
+    | { type: 'SET_TIPS'; payload: number };
 
 const initialState: CartState = {
     items: [],
     isOpen: false,
     totalItems: 0,
     totalPrice: 0,
+    tips: 0,
 };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
@@ -100,6 +103,13 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                 items: [],
                 totalItems: 0,
                 totalPrice: 0,
+                tips: 0,
+            };
+
+        case 'SET_TIPS':
+            return {
+                ...state,
+                tips: Math.max(0, action.payload),
             };
 
         case 'TOGGLE_CART':
@@ -158,8 +168,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem('tastia_cart', JSON.stringify(state.items));
+            localStorage.setItem('tastia_cart_tips', JSON.stringify(state.tips));
         }
-    }, [state.items]);
+    }, [state.items, state.tips]);
+
+    // Load tips from localStorage on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedTips = localStorage.getItem('tastia_cart_tips');
+            if (savedTips) {
+                try {
+                    const tips = parseFloat(savedTips) || 0;
+                    dispatch({ type: 'SET_TIPS', payload: tips });
+                } catch (error) {
+                    console.error('Error loading tips:', error);
+                }
+            }
+        }
+    }, []);
 
     return (
         <CartContext.Provider value={{ state, dispatch }}>

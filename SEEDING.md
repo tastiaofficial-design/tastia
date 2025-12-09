@@ -49,3 +49,4 @@ The seed will add the following 10 categories:
 All categories will be set to `active` status and use the Tastia primary color (#B94A24).
 
 
+

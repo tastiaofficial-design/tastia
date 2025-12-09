@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useCart } from "@/contexts/CartContext";
-import { ShoppingCart, X, Plus, Minus, Trash2 } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { generateWhatsAppMessage, getWhatsAppUrl } from "@/lib/whatsapp-utils";
 
 export const CartIcon = () => {
     const { state, dispatch } = useCart();
@@ -24,6 +26,107 @@ export const CartIcon = () => {
 
 export const CartModal = () => {
     const { state, dispatch } = useCart();
+    const [showOrderForm, setShowOrderForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [customerAddress, setCustomerAddress] = useState('');
+    const [notes, setNotes] = useState('');
+    const [tips, setTips] = useState(0);
+
+    // Sync tips with state
+    useEffect(() => {
+        setTips(state.tips || 0);
+    }, [state.tips]);
+
+    // WhatsApp number - should be in environment variable
+    const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '966567833138';
+
+    const handleCheckout = () => {
+        if (state.items.length === 0) return;
+        setShowOrderForm(true);
+    };
+
+    const handleSubmitOrder = async () => {
+        if (state.items.length === 0) return;
+        if (!customerPhone.trim()) {
+            alert('يرجى إدخال رقم الهاتف');
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Prepare order data
+            const orderItems = state.items.map(item => ({
+                menuItemId: item.id,
+                menuItemName: item.name,
+                menuItemNameEn: item.nameEn,
+                quantity: item.quantity,
+                unitPrice: item.price,
+                totalPrice: item.price * item.quantity,
+            }));
+
+            const orderData = {
+                items: orderItems,
+                totalAmount: state.totalPrice,
+                tips: tips || 0,
+                customerInfo: {
+                    name: customerName.trim() || undefined,
+                    phone: customerPhone.trim(),
+                    address: customerAddress.trim() || undefined,
+                },
+                notes: notes.trim() || undefined,
+            };
+
+            // Save order to database
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to save order');
+            }
+
+            // Generate WhatsApp message with order number
+            const orderNumber = result.data.orderNumber;
+            const message = generateWhatsAppMessage({
+                ...orderData,
+                orderNumber,
+            });
+
+            // Open WhatsApp
+            const whatsappUrl = getWhatsAppUrl(WHATSAPP_NUMBER, message);
+            window.open(whatsappUrl, '_blank');
+
+            // Clear cart and reset form
+            dispatch({ type: 'CLEAR_CART' });
+            dispatch({ type: 'SET_CART_OPEN', payload: false });
+            setShowOrderForm(false);
+            setCustomerName('');
+            setCustomerPhone('');
+            setCustomerAddress('');
+            setNotes('');
+            setTips(0);
+
+            // Show success message
+            alert('تم إرسال الطلب بنجاح! سيتم فتح واتساب لإتمام الطلب.');
+
+        } catch (error: any) {
+            console.error('Error submitting order:', error);
+            alert('حدث خطأ في إرسال الطلب. يرجى المحاولة مرة أخرى.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const finalTotal = state.totalPrice + (tips || 0);
 
     if (!state.isOpen) return null;
 
@@ -127,11 +230,41 @@ export const CartModal = () => {
                         </div>
 
                         {/* Footer */}
-                        {state.items.length > 0 && (
+                        {state.items.length > 0 && !showOrderForm && (
                             <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark">
-                                <div className="flex items-center justify-between mb-4">
-                                    <span className="text-tastia-cream/70">المجموع</span>
-                                    <span className="text-tastia-cream text-2xl font-bold">{state.totalPrice} ر.س</span>
+                                {/* Tips Input */}
+                                <div className="mb-4">
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">البقشيش (اختياري)</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.5"
+                                        value={tips}
+                                        onChange={(e) => {
+                                            const value = parseFloat(e.target.value) || 0;
+                                            setTips(value);
+                                            dispatch({ type: 'SET_TIPS', payload: value });
+                                        }}
+                                        placeholder="0"
+                                        className="w-full admin-input"
+                                    />
+                                </div>
+
+                                <div className="space-y-2 mb-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-tastia-cream/70">المجموع</span>
+                                        <span className="text-tastia-cream text-lg font-bold">{state.totalPrice.toFixed(2)} ر.س</span>
+                                    </div>
+                                    {tips > 0 && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-tastia-cream/70">البقشيش</span>
+                                            <span className="text-tastia-cream text-lg font-bold">{tips.toFixed(2)} ر.س</span>
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between pt-2 border-t border-tastia-secondary/30">
+                                        <span className="text-tastia-cream font-bold">المجموع النهائي</span>
+                                        <span className="text-tastia-secondary text-2xl font-bold">{finalTotal.toFixed(2)} ر.س</span>
+                                    </div>
                                 </div>
                                 <div className="flex gap-3">
                                     <button
@@ -141,9 +274,85 @@ export const CartModal = () => {
                                         إفراغ السلة
                                     </button>
                                     <button
+                                        onClick={handleCheckout}
                                         className="flex-1 py-3 rounded-full bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream font-bold hover:brightness-110 transition-all"
                                     >
                                         إتمام الطلب
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Order Form */}
+                        {showOrderForm && (
+                            <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark space-y-4">
+                                <h3 className="text-tastia-cream text-lg font-bold">معلومات الطلب</h3>
+                                
+                                <div>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">رقم الهاتف *</label>
+                                    <input
+                                        type="tel"
+                                        value={customerPhone}
+                                        onChange={(e) => setCustomerPhone(e.target.value)}
+                                        placeholder="05xxxxxxxx"
+                                        required
+                                        className="w-full admin-input"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">الاسم (اختياري)</label>
+                                    <input
+                                        type="text"
+                                        value={customerName}
+                                        onChange={(e) => setCustomerName(e.target.value)}
+                                        placeholder="اسمك"
+                                        className="w-full admin-input"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">العنوان (اختياري)</label>
+                                    <input
+                                        type="text"
+                                        value={customerAddress}
+                                        onChange={(e) => setCustomerAddress(e.target.value)}
+                                        placeholder="عنوان التوصيل"
+                                        className="w-full admin-input"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">ملاحظات (اختياري)</label>
+                                    <textarea
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
+                                        placeholder="ملاحظات إضافية..."
+                                        className="w-full admin-input min-h-20"
+                                    />
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        onClick={() => setShowOrderForm(false)}
+                                        disabled={isLoading}
+                                        className="flex-1 py-3 rounded-full border border-tastia-secondary/50 text-tastia-cream font-bold hover:bg-tastia-primary/20 transition-colors disabled:opacity-50"
+                                    >
+                                        إلغاء
+                                    </button>
+                                    <button
+                                        onClick={handleSubmitOrder}
+                                        disabled={isLoading || !customerPhone.trim()}
+                                        className="flex-1 py-3 rounded-full bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream font-bold hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                جاري الإرسال...
+                                            </>
+                                        ) : (
+                                            'إرسال الطلب عبر واتساب'
+                                        )}
                                     </button>
                                 </div>
                             </div>

@@ -11,6 +11,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  BarChart3,
 } from 'lucide-react';
 import { AdminAuth } from '@/components/AdminAuth';
 
@@ -18,6 +19,7 @@ const navigation = [
   { name: 'لوحة التحكم', href: '/admin', icon: LayoutDashboard },
   { name: 'الفئات', href: '/admin/categories', icon: FolderOpen },
   { name: 'المنتجات', href: '/admin/items', icon: Package },
+  { name: 'التحليلات', href: '/admin/analytics', icon: BarChart3 },
 ];
 
 export default function AdminLayout({
