@@ -13,6 +13,7 @@ export interface ICustomerInfo {
   name?: string;
   phone?: string;
   address?: string;
+  tableNumber?: string;
 }
 
 export interface IOrder {
@@ -72,6 +73,10 @@ const CustomerInfoSchema = new Schema<ICustomerInfo>({
     trim: true,
   },
   address: {
+    type: String,
+    trim: true,
+  },
+  tableNumber: {
     type: String,
     trim: true,
   },

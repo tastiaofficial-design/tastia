@@ -11,6 +11,7 @@ interface CustomerInfo {
   name?: string;
   phone?: string;
   address?: string;
+  tableNumber?: string;
 }
 
 interface OrderData {
@@ -40,6 +41,7 @@ export function generateWhatsAppMessage(orderData: OrderData): string {
   const customerInfoText = [
     orderData.customerInfo.name && `الاسم: ${orderData.customerInfo.name}`,
     orderData.customerInfo.phone && `الهاتف: ${orderData.customerInfo.phone}`,
+    orderData.customerInfo.tableNumber && `رقم الطاولة: ${orderData.customerInfo.tableNumber}`,
     orderData.customerInfo.address && `العنوان: ${orderData.customerInfo.address}`
   ].filter(Boolean).join('\n');
 

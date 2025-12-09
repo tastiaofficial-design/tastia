@@ -31,6 +31,7 @@ export const CartModal = () => {
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [customerAddress, setCustomerAddress] = useState('');
+    const [tableNumber, setTableNumber] = useState('');
     const [notes, setNotes] = useState('');
     const [tips, setTips] = useState(0);
 
@@ -40,6 +41,7 @@ export const CartModal = () => {
     }, [state.tips]);
 
     // WhatsApp number - should be in environment variable
+    // +966 56 336 9848
     const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '966563369848';
 
     const handleCheckout = () => {
@@ -75,6 +77,7 @@ export const CartModal = () => {
                     name: customerName.trim() || undefined,
                     phone: customerPhone.trim(),
                     address: customerAddress.trim() || undefined,
+                    tableNumber: tableNumber.trim() || undefined,
                 },
                 notes: notes.trim() || undefined,
             };
@@ -112,6 +115,7 @@ export const CartModal = () => {
             setCustomerName('');
             setCustomerPhone('');
             setCustomerAddress('');
+            setTableNumber('');
             setNotes('');
             setTips(0);
 
@@ -148,10 +152,10 @@ export const CartModal = () => {
                         initial={{ opacity: 0, y: 100 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 100 }}
-                        className="fixed bottom-0 left-0 right-0 z-50 max-h-[90vh] bg-tastia-dark border-t-2 border-tastia-secondary rounded-t-3xl overflow-hidden flex flex-col"
+                        className="fixed inset-0 z-50 bg-tastia-dark flex flex-col"
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-tastia-secondary/30">
+                        <div className="flex items-center justify-between p-4 border-b border-tastia-secondary/30 flex-shrink-0">
                             <h2 className="text-tastia-cream text-xl font-bold flex items-center gap-2">
                                 <ShoppingCart className="w-5 h-5" />
                                 سلة المشتريات
@@ -231,7 +235,7 @@ export const CartModal = () => {
 
                         {/* Footer */}
                         {state.items.length > 0 && !showOrderForm && (
-                            <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark">
+                            <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark flex-shrink-0">
                                 {/* Tips Input */}
                                 <div className="mb-4">
                                     <label className="block text-tastia-cream/70 text-sm mb-2">البقشيش (اختياري)</label>
@@ -285,7 +289,7 @@ export const CartModal = () => {
 
                         {/* Order Form */}
                         {showOrderForm && (
-                            <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark space-y-4">
+                            <div className="flex-1 overflow-y-auto p-4 border-t border-tastia-secondary/30 bg-tastia-dark space-y-4">
                                 <h3 className="text-tastia-cream text-lg font-bold">معلومات الطلب</h3>
                                 
                                 <div>
@@ -312,6 +316,17 @@ export const CartModal = () => {
                                 </div>
 
                                 <div>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">رقم الطاولة (اختياري)</label>
+                                    <input
+                                        type="text"
+                                        value={tableNumber}
+                                        onChange={(e) => setTableNumber(e.target.value)}
+                                        placeholder="رقم الطاولة"
+                                        className="w-full admin-input"
+                                    />
+                                </div>
+
+                                <div>
                                     <label className="block text-tastia-cream/70 text-sm mb-2">العنوان (اختياري)</label>
                                     <input
                                         type="text"
@@ -332,7 +347,7 @@ export const CartModal = () => {
                                     />
                                 </div>
 
-                                <div className="flex gap-3 pt-2">
+                                <div className="flex gap-3 pt-2 flex-shrink-0">
                                     <button
                                         onClick={() => setShowOrderForm(false)}
                                         disabled={isLoading}
