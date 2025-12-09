@@ -118,23 +118,59 @@ export const MenuItemsList = ({
 
     if (showGrouped && groupedItems) {
         return (
-            <div className="px-4 menu-items-container">
-                {Object.values(groupedItems).map(({ category, items: categoryItems }) => (
-                    <div key={category._id} className="mb-8">
-                        <h3 className="text-tastia-cream text-xl font-bold mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-tastia-secondary"></span>
-                            {category.name}
-                        </h3>
-                        {renderItems(categoryItems)}
-                    </div>
-                ))}
+            <div 
+                className="px-4 menu-items-container relative"
+                style={{
+                    background: 'linear-gradient(to bottom, rgb(249, 115, 22), rgb(234, 88, 12), rgb(194, 65, 12))',
+                }}
+            >
+                <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        opacity: 0.3,
+                        zIndex: 0,
+                    }}
+                />
+                <div className="relative z-10">
+                    {Object.values(groupedItems).map(({ category, items: categoryItems }) => (
+                        <div key={category._id} className="mb-8">
+                            <h3 className="text-tastia-cream text-xl font-bold mb-4 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-tastia-secondary"></span>
+                                {category.name}
+                            </h3>
+                            {renderItems(categoryItems)}
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="px-4 menu-items-container">
-            {renderItems(filteredItems)}
+        <div 
+            className="px-4 menu-items-container relative"
+            style={{
+                background: 'linear-gradient(to bottom, rgb(249, 115, 22), rgb(234, 88, 12), rgb(194, 65, 12))',
+            }}
+        >
+            <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    opacity: 0.3,
+                    zIndex: 0,
+                }}
+            />
+            <div className="relative z-10">
+                {renderItems(filteredItems)}
+            </div>
         </div>
     );
 };

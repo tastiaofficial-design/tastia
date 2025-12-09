@@ -256,7 +256,7 @@ export const CartModal = () => {
 
                                 <div className="space-y-2 mb-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-tastia-cream/70">المجموع</span>
+                                    <span className="text-tastia-cream/70">المجموع</span>
                                         <span className="text-tastia-cream text-lg font-bold">{state.totalPrice.toFixed(2)} ر.س</span>
                                     </div>
                                     {tips > 0 && (
