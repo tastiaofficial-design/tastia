@@ -149,40 +149,44 @@ const CartContext = createContext<{
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [state, dispatch] = useReducer(cartReducer, initialState);
 
-    // Load cart from localStorage on mount
+    // Load cart from localStorage on mount (handles private mode restrictions)
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const savedCart = localStorage.getItem('tastia_cart');
-            if (savedCart) {
-                try {
+            try {
+                const savedCart = localStorage.getItem('tastia_cart');
+                if (savedCart) {
                     const cartItems = JSON.parse(savedCart);
                     dispatch({ type: 'LOAD_CART', payload: cartItems });
-                } catch (error) {
-                    console.error('خطأ في تحميل السلة:', error);
                 }
+            } catch (error) {
+                console.warn('تعذر تحميل السلة من التخزين المحلي:', error);
             }
         }
     }, []);
 
-    // Save cart to localStorage whenever it changes
+    // Save cart to localStorage whenever it changes (guarded for browsers that block storage)
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            localStorage.setItem('tastia_cart', JSON.stringify(state.items));
-            localStorage.setItem('tastia_cart_tips', JSON.stringify(state.tips));
+            try {
+                localStorage.setItem('tastia_cart', JSON.stringify(state.items));
+                localStorage.setItem('tastia_cart_tips', JSON.stringify(state.tips));
+            } catch (error) {
+                console.warn('تعذر حفظ السلة في التخزين المحلي (ربما وضع خاص):', error);
+            }
         }
     }, [state.items, state.tips]);
 
     // Load tips from localStorage on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const savedTips = localStorage.getItem('tastia_cart_tips');
-            if (savedTips) {
-                try {
+            try {
+                const savedTips = localStorage.getItem('tastia_cart_tips');
+                if (savedTips) {
                     const tips = parseFloat(savedTips) || 0;
                     dispatch({ type: 'SET_TIPS', payload: tips });
-                } catch (error) {
-                    console.error('Error loading tips:', error);
                 }
+            } catch (error) {
+                console.warn('تعذر تحميل الإكرامية من التخزين المحلي:', error);
             }
         }
     }, []);
