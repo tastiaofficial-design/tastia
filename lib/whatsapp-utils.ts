@@ -99,3 +99,4 @@ export function getWhatsAppUrl(phoneNumber: string, message: string): string {
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
 }
 
+

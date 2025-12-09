@@ -40,7 +40,7 @@ export const CartModal = () => {
     }, [state.tips]);
 
     // WhatsApp number - should be in environment variable
-    const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '966567833138';
+    const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '966563369848';
 
     const handleCheckout = () => {
         if (state.items.length === 0) return;
@@ -148,7 +148,7 @@ export const CartModal = () => {
                         initial={{ opacity: 0, y: 100 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 100 }}
-                        className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] bg-tastia-dark border-t-2 border-tastia-secondary rounded-t-3xl overflow-hidden"
+                        className="fixed bottom-0 left-0 right-0 z-50 max-h-[90vh] bg-tastia-dark border-t-2 border-tastia-secondary rounded-t-3xl overflow-hidden flex flex-col"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-tastia-secondary/30">
@@ -165,7 +165,7 @@ export const CartModal = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="overflow-y-auto max-h-[50vh] p-4">
+                        <div className="flex-1 overflow-y-auto p-4" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
                             {state.items.length === 0 ? (
                                 <div className="text-center py-8">
                                     <div className="text-5xl mb-4">🛒</div>
