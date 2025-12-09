@@ -61,7 +61,9 @@ export const MenuItemsList = ({
     // Group items by category if showGrouped is true
     const groupedItems = showGrouped
         ? categories.reduce((acc, category) => {
-            const categoryItems = filteredItems.filter(item => item.categoryId === category._id);
+            // Convert both to strings for comparison to handle ObjectId vs string mismatch
+            const categoryIdStr = String(category._id);
+            const categoryItems = filteredItems.filter(item => String(item.categoryId) === categoryIdStr);
             if (categoryItems.length > 0) {
                 acc[category._id] = {
                     category,

@@ -32,14 +32,26 @@ export async function GET(request: NextRequest) {
 
         await dbConnect();
 
-        const query = categoryId ? { categoryId } : {};
+        const query: any = categoryId ? { categoryId } : {};
+        
+        // For non-admin requests, only return active items
+        if (!isAdmin) {
+            query.status = 'active';
+        }
 
-        const items = await MenuItem
+        let items = await MenuItem
             .find(query)
             .select('name nameEn description price discountPrice image calories preparationTime categoryId status')
             .sort({ order: 1, createdAt: -1 })
             .lean()
             .exec();
+
+        // Ensure categoryId is a string for consistent API responses
+        items = items.map((item: any) => ({
+            ...item,
+            categoryId: String(item.categoryId || ''),
+            _id: String(item._id || '')
+        }));
 
         if (!isAdmin) {
             cache.set(cacheKey, items, CacheTTL.FIVE_MINUTES);

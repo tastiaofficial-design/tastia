@@ -74,11 +74,22 @@ export default function Menu() {
         ? categoriesData
             .filter((category: Category) => category.status === 'active')
             .sort((a: Category, b: Category) => a.order - b.order)
+            .map((category: Category) => ({
+                ...category,
+                // Ensure _id is a string for consistent comparison
+                _id: String(category._id || '')
+            }))
         : [];
 
     // Process menu items data
     const menuItems = itemsData && Array.isArray(itemsData) && itemsData.length > 0
         ? itemsData
+            .filter((item: MenuItem) => item.status === 'active')
+            .map((item: MenuItem) => ({
+                ...item,
+                // Ensure categoryId is a string for consistent comparison
+                categoryId: String(item.categoryId || '')
+            }))
         : [];
 
     const loading = categoriesLoading || itemsLoading;
@@ -90,7 +101,20 @@ export default function Menu() {
         if (itemsCached) {
             console.log('عناصر القائمة محملة من الذاكرة المؤقتة');
         }
-    }, [categoriesCached, itemsCached]);
+        
+        // Debug logging
+        if (categoriesData) {
+            console.log('Categories loaded:', categoriesData.length, categoriesData);
+        }
+        if (itemsData) {
+            console.log('Items loaded:', itemsData.length, itemsData);
+            console.log('Items with categoryIds:', itemsData.map((item: MenuItem) => ({
+                name: item.name,
+                categoryId: item.categoryId,
+                categoryIdType: typeof item.categoryId
+            })));
+        }
+    }, [categoriesCached, itemsCached, categoriesData, itemsData]);
 
     const handleCategoryClick = (categoryId: string) => {
         if (categoryId === 'all') {
@@ -134,7 +158,8 @@ export default function Menu() {
         let items = menuItems;
 
         if (selectedCategory && selectedCategory !== 'offers') {
-            items = items.filter(item => item.categoryId === selectedCategory);
+            // Convert both to strings for comparison to handle ObjectId vs string mismatch
+            items = items.filter(item => String(item.categoryId) === String(selectedCategory));
         }
 
         if (searchQuery.trim()) {

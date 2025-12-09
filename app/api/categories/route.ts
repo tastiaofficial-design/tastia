@@ -44,7 +44,13 @@ export async function GET(request: NextRequest) {
             .lean();
 
         if (limit) q = q.limit(limit);
-        const categories = await q.exec();
+        let categories = await q.exec();
+
+        // Ensure _id is a string for consistent API responses
+        categories = categories.map((cat: any) => ({
+            ...cat,
+            _id: String(cat._id || '')
+        }));
 
         if (admin !== 'true') {
             cache.set(cacheKey, categories, CacheTTL.ONE_MINUTE);
