@@ -1,0 +1,615 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
+import ImageUpload from '@/components/admin/ImageUpload';
+import { IMenuItem, IMenuItemIngredient } from '@/lib/models/MenuItem';
+import { ICategory } from '@/lib/models/Category';
+import Image from 'next/image';
+
+export default function ItemsPage() {
+  const [items, setItems] = useState<IMenuItem[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<IMenuItem | null>(null);
+  const [activeTab, setActiveTab] = useState<'basic' | 'images' | 'more' | 'settings'>('basic');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [formData, setFormData] = useState<Partial<IMenuItem>>({
+    name: '',
+    nameEn: '',
+    description: '',
+    descriptionEn: '',
+    categoryId: '',
+    price: 0,
+    discountPrice: 0,
+    image: '',
+    color: '#B94A24',
+    preparationTime: 0,
+    calories: 0,
+    servingSize: '',
+    tags: [],
+    allergens: [],
+    status: 'active',
+    featured: false,
+    order: 0,
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [itemsRes, categoriesRes] = await Promise.all([
+        fetch('/api/items?admin=true', { headers: { 'Cache-Control': 'no-store' } }),
+        fetch('/api/categories'),
+      ]);
+
+      const [itemsData, categoriesData] = await Promise.all([
+        itemsRes.json(),
+        categoriesRes.json(),
+      ]);
+
+      if (itemsData.success) setItems(itemsData.data);
+      if (categoriesData.success) setCategories(categoriesData.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const url = editingItem ? `/api/items/${editingItem._id}` : '/api/items';
+      const method = editingItem ? 'PUT' : 'POST';
+      
+      const sanitized: Partial<IMenuItem> = {
+        ...formData,
+        price: Number(formData.price) || 0,
+        discountPrice: formData.discountPrice !== undefined && formData.discountPrice !== null
+          ? Number(formData.discountPrice)
+          : undefined,
+        calories: formData.calories !== undefined && formData.calories !== null
+          ? Number(formData.calories)
+          : undefined,
+        preparationTime: formData.preparationTime !== undefined && formData.preparationTime !== null
+          ? Number(formData.preparationTime)
+          : undefined,
+        order: formData.order !== undefined && formData.order !== null
+          ? Number(formData.order)
+          : undefined,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sanitized),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        fetchData();
+        handleCloseModal();
+        setErrorMessage('');
+      } else {
+        const msg = data.error || 'حدث خطأ غير متوقع، حاول مرة أخرى';
+        setErrorMessage(msg);
+        console.error('API error:', msg);
+      }
+    } catch (error) {
+      console.error('Error saving item:', error);
+      setErrorMessage('تعذر حفظ المنتج. تحقق من البيانات وأعد المحاولة');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+
+    try {
+      const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+
+  const handleEdit = (item: IMenuItem) => {
+    setEditingItem(item);
+    setFormData(item);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingItem(null);
+    setErrorMessage('');
+    setFormData({
+      name: '',
+      nameEn: '',
+      description: '',
+      descriptionEn: '',
+      categoryId: '',
+      price: 0,
+      discountPrice: 0,
+      image: '',
+      color: '#B94A24',
+      preparationTime: 0,
+      calories: 0,
+      servingSize: '',
+      tags: [],
+      allergens: [],
+      status: 'active',
+      featured: false,
+      order: 0,
+    });
+  };
+
+  const filteredItems = items.filter((item) => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.nameEn?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !selectedCategory || item.categoryId === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-effect rounded-2xl p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <div className="h-7 w-48 bg-white/10 rounded animate-pulse" />
+              <div className="h-4 w-64 bg-white/10 rounded mt-2 animate-pulse" />
+            </div>
+            <div className="h-11 w-44 bg-white/10 rounded-xl animate-pulse" />
+          </div>
+        </div>
+        <div className="glass-effect rounded-2xl p-4 space-y-4">
+          <div className="h-11 bg-white/10 rounded-xl animate-pulse" />
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-9 w-24 bg-white/10 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="glass-effect rounded-2xl overflow-hidden">
+              <div className="h-48 bg-white/10 animate-pulse" />
+              <div className="p-6 space-y-3">
+                <div className="h-5 w-2/3 bg-white/10 rounded animate-pulse" />
+                <div className="h-4 w-1/2 bg-white/10 rounded animate-pulse" />
+                <div className="h-4 w-full bg-white/10 rounded animate-pulse" />
+                <div className="flex items-center justify-between pt-2">
+                  <div className="h-6 w-32 bg-white/10 rounded animate-pulse" />
+                  <div className="h-5 w-16 bg-white/10 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="glass-effect rounded-2xl p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-tastia-cream mb-2">إدارة المنتجات</h1>
+            <p className="text-tastia-cream/70">إضافة وتعديل وحذف منتجات القائمة</p>
+          </div>
+          <button
+            onClick={() => setShowModal(true)}
+            className="admin-button px-6 py-3 rounded-xl text-tastia-cream font-semibold hover:brightness-110 transition-colors flex items-center gap-2 justify-center"
+          >
+            <Plus size={20} />
+            إضافة منتج جديد
+          </button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="glass-effect rounded-2xl p-4 space-y-4">
+        <div className="relative">
+          <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-tastia-cream/50" size={20} />
+          <input
+            type="text"
+            placeholder="البحث عن منتج..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pr-12 pl-4 py-3 bg-white/10 rounded-xl text-tastia-cream placeholder-tastia-cream/50 border border-tastia-secondary/30 focus:border-tastia-secondary focus:outline-none"
+          />
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          <button
+            onClick={() => setSelectedCategory('')}
+            className={`px-4 py-2 rounded-xl font-semibold whitespace-nowrap transition-colors ${
+              !selectedCategory
+                ? 'bg-tastia-primary text-tastia-cream'
+                : 'bg-white/10 text-tastia-cream/70 hover:bg-white/20'
+            }`}
+          >
+            الكل
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat._id}
+              onClick={() => setSelectedCategory(cat._id!)}
+              className={`px-4 py-2 rounded-xl font-semibold whitespace-nowrap transition-colors ${
+                selectedCategory === cat._id
+                  ? 'bg-tastia-primary text-tastia-cream'
+                  : 'bg-white/10 text-tastia-cream/70 hover:bg-white/20'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Items Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredItems.map((item) => {
+          const category = categories.find((c) => c._id === item.categoryId);
+          return (
+            <div
+              key={item._id}
+              className="glass-effect rounded-2xl overflow-hidden hover:bg-white/15 transition-all duration-200"
+            >
+              {item.image && (
+                <div className="relative h-48 bg-black/20">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-tastia-cream mb-1">{item.name}</h3>
+                    {item.nameEn && (
+                      <p className="text-tastia-cream/60 text-sm">{item.nameEn}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id!)}
+                      className="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {item.description && (
+                  <p className="text-tastia-cream/70 text-sm mb-4 line-clamp-2">
+                    {item.description}
+                  </p>
+                )}
+
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex gap-2">
+                    <span className="text-2xl font-bold text-tastia-cream">
+                      {item.discountPrice || item.price} ر.س
+                    </span>
+                    {item.discountPrice && (
+                      <span className="text-lg text-tastia-cream/50 line-through">
+                        {item.price} ر.س
+                      </span>
+                    )}
+                  </div>
+                  {item.calories && item.calories > 0 && (
+                    <div className="text-sm text-tastia-cream/60">
+                      <span className="text-tastia-secondary font-medium">{item.calories}</span> سعرة حرارية
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-tastia-cream/50">{category?.name}</span>
+                  <span
+                    className={`px-3 py-1 rounded-full ${
+                      item.status === 'active'
+                        ? 'bg-green-500/20 text-green-300'
+                        : item.status === 'out_of_stock'
+                        ? 'bg-yellow-500/20 text-yellow-300'
+                        : 'bg-gray-500/20 text-gray-300'
+                    }`}
+                  >
+                    {item.status === 'active'
+                      ? 'نشط'
+                      : item.status === 'out_of_stock'
+                      ? 'نفذ'
+                      : 'غير نشط'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {filteredItems.length === 0 && (
+        <div className="glass-effect rounded-2xl p-12 text-center">
+          <p className="text-tastia-cream/50">لا توجد منتجات</p>
+        </div>
+      )}
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
+          <div className="glass-sidebar rounded-2xl p-6 w-full max-w-4xl my-8 border border-tastia-secondary/30">
+            <h2 className="text-2xl font-bold text-tastia-cream mb-6">
+              {editingItem ? 'تعديل المنتج' : 'إضافة منتج جديد'}
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {errorMessage && (
+                <div className="p-3 rounded-lg bg-red-500/20 text-red-200 border border-red-400/30">
+                  {errorMessage}
+                </div>
+              )}
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'basic', label: 'الأساسي' },
+                  { key: 'images', label: 'الصور' },
+                  { key: 'more', label: 'معلومات إضافية' },
+                  { key: 'settings', label: 'الإعدادات' },
+                ].map(tab => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActiveTab(tab.key as any)}
+                    className={`px-3 py-2 rounded-lg text-sm font-semibold ${activeTab === tab.key ? 'bg-tastia-primary text-tastia-cream' : 'glass-effect text-tastia-cream/80 hover:bg-white/10'}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              {/* Basic Info */}
+              {activeTab === 'basic' && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-tastia-cream">المعلومات الأساسية</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      اسم المنتج (عربي) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="admin-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      اسم المنتج (English)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.nameEn}
+                      onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                      className="admin-input"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      الوصف (عربي)
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="admin-input min-h-24"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      الوصف (English)
+                    </label>
+                    <textarea
+                      value={formData.descriptionEn}
+                      onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                      className="admin-input min-h-24"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      الفئة *
+                    </label>
+                    <select
+                      required
+                      value={formData.categoryId}
+                      onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                      className="admin-input"
+                    >
+                      <option value="">اختر الفئة</option>
+                      {categories.map((cat) => (
+                        <option key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      السعر *
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      step="0.01"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                      className="admin-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      سعر الخصم
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={formData.discountPrice}
+                      onChange={(e) => setFormData({ ...formData, discountPrice: parseFloat(e.target.value) || 0 })}
+                      className="admin-input"
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
+
+              {/* Images */}
+              {activeTab === 'images' && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-tastia-cream">الصور</h3>
+                <ImageUpload
+                  label="الصورة الرئيسية"
+                  value={formData.image}
+                  onChange={(image) => setFormData({ ...formData, image })}
+                />
+              </div>
+              )}
+
+              {/* Additional Info */}
+              {activeTab === 'more' && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-tastia-cream">معلومات إضافية</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      وقت التحضير (دقيقة)
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.preparationTime}
+                      onChange={(e) => setFormData({ ...formData, preparationTime: parseInt(e.target.value) || 0 })}
+                      className="admin-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      السعرات الحرارية
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.calories}
+                      onChange={(e) => setFormData({ ...formData, calories: parseInt(e.target.value) || 0 })}
+                      className="admin-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      حجم الحصة
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.servingSize}
+                      onChange={(e) => setFormData({ ...formData, servingSize: e.target.value })}
+                      className="admin-input"
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
+
+              {/* Settings */}
+              {activeTab === 'settings' && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-tastia-cream">الإعدادات</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      الحالة
+                    </label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                      className="admin-input"
+                    >
+                      <option value="active">نشط</option>
+                      <option value="inactive">غير نشط</option>
+                      <option value="out_of_stock">نفذ</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-tastia-cream mb-2 block">
+                      الترتيب
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.order}
+                      onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
+                      className="admin-input"
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4 border-t border-tastia-secondary/30">
+                <button
+                  type="submit"
+                  className="flex-1 admin-button px-6 py-3 rounded-xl text-tastia-cream font-semibold hover:brightness-110 transition-colors"
+                >
+                  {editingItem ? 'تحديث' : 'إضافة'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="flex-1 glass-effect px-6 py-3 rounded-xl text-tastia-cream font-semibold hover:bg-white/10 transition-colors"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
