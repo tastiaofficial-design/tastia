@@ -27,13 +27,21 @@ export const RestaurantMenuHeader = () => {
                 </button>
 
                 <div className="relative w-full">
-                    <div className="relative w-full h-44 sm:h-56 md:h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-tastia-primary to-tastia-dark border-2 border-tastia-secondary">
-                        {/* Decorative pattern */}
-                        <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-4 left-4 w-20 h-20 border border-tastia-cream rounded-full"></div>
-                            <div className="absolute bottom-4 right-4 w-32 h-32 border border-tastia-cream rounded-full"></div>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 border border-tastia-cream rounded-full"></div>
-                        </div>
+                    <div
+                        className="relative w-full h-44 sm:h-56 md:h-64 rounded-2xl overflow-hidden border-2 border-tastia-secondary bg-[hsl(var(--tastia-primary))]"
+                    >
+                        {/* Image layer sits on top of the brand orange so both stay visible */}
+                        <div
+                            className="absolute inset-0 opacity-80 mix-blend-multiply"
+                            style={{
+                                backgroundImage: "url('/Restaurant_Aesthetic_food_Red_Wallpaper_4-removebg-preview.webp')",
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                            }}
+                        />
+                        {/* Orange-tinted gradient to keep the brand color present over the image */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--tastia-primary))] via-[hsl(var(--tastia-secondary))] to-[hsl(var(--tastia-dark))] opacity-80" />
 
                         <div className="relative z-10 h-full flex items-center justify-center">
                             {/* Brand Logo */}

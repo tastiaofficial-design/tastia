@@ -10,7 +10,6 @@ interface SidebarProps {
 
 const menuItems = [
     { label: "القائمة", href: "/menu" },
-    { label: "لوحة التحكم", href: "/admin" },
     { label: "تواصل معنا", href: "/contact" },
 ] as const;
 
