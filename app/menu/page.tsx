@@ -201,7 +201,7 @@ export default function Menu() {
             ) : (
                 <ErrorBoundary>
                     <motion.div
-                        className="relative z-10 min-h-screen pb-24 bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700"
+                        className="relative z-10 min-h-screen pb-24"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -283,15 +283,9 @@ export default function Menu() {
                             transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
                         >
                             <div
-                                className="rounded-3xl overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700"
-                                style={{
-                                    backgroundImage: 'url(/Carlos_Sainz_wallpaper-removebg-preview.webp)',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                }}
+                                className="rounded-3xl overflow-hidden bg-tastia-dark"
                             >
-                                <div className="md:backdrop-blur-sm bg-gradient-to-b from-orange-500/90 via-orange-600/90 to-orange-700/90">
+                                <div className="md:backdrop-blur-sm md:bg-tastia-dark/85">
                                     <MenuItemsList
                                         items={filteredMenuItems}
                                         onAddToCart={handleItemClick}

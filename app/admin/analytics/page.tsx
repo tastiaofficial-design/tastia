@@ -6,7 +6,7 @@ import { TrendingUp, ShoppingBag, Wallet, PieChart } from "lucide-react";
 
 type Order = IOrder;
 
-function StatCard({ title, value, subtitle, icon: Icon, colorClass = "text-tastia-cream" }: { title: string; value: string | number; subtitle?: string; icon: any; colorClass?: string; }) {
+function StatCard({ title, value, subtitle, icon: Icon, colorClass = "text-tastia-cream" }: { title: string; value: string | number | React.ReactNode; subtitle?: string | React.ReactNode; icon: any; colorClass?: string; }) {
   return (
     <div className="glass-effect rounded-2xl p-5 border border-tastia-secondary/30">
       <div className="flex items-center justify-between">
@@ -280,16 +280,53 @@ export default function AnalyticsPage() {
           {/* KPI cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard title="إجمالي الطلبات" value={stats.totalOrders} icon={ShoppingBag} />
-            <StatCard title="إجمالي الإيرادات" value={`${stats.totalRevenue.toFixed(2)} ر.س`} icon={Wallet} />
-            <StatCard title="إجمالي البقشيش" value={`${stats.totalTips.toFixed(2)} ر.س`} icon={TrendingUp} />
-            <StatCard title="متوسط قيمة الطلب" value={`${stats.averageOrderValue.toFixed(2)} ر.س`} icon={PieChart} />
+            <StatCard 
+              title="إجمالي الإيرادات" 
+              value={
+                <span className="flex items-center gap-1">
+                  {stats.totalRevenue.toFixed(2)}
+                  <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-5 h-5 object-contain" />
+                </span>
+              } 
+              icon={Wallet} 
+            />
+            <StatCard 
+              title="إجمالي البقشيش" 
+              value={
+                <span className="flex items-center gap-1">
+                  {stats.totalTips.toFixed(2)}
+                  <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-5 h-5 object-contain" />
+                </span>
+              } 
+              icon={TrendingUp} 
+            />
+            <StatCard 
+              title="متوسط قيمة الطلب" 
+              value={
+                <span className="flex items-center gap-1">
+                  {stats.averageOrderValue.toFixed(2)}
+                  <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-5 h-5 object-contain" />
+                </span>
+              } 
+              icon={PieChart} 
+            />
           </div>
 
           {/* Additional KPIs */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <StatCard title="طلبات التيك أواي" value={stats.takeawayOrders} icon={ShoppingBag} />
             <StatCard title="طلبات داخل المطعم" value={stats.dineInOrders} icon={ShoppingBag} />
-            <StatCard title="عدد العملاء" value={stats.numCustomers} subtitle={`متوسط إنفاق: ${stats.averageSpendPerCustomer.toFixed(2)} ر.س`} icon={Wallet} />
+            <StatCard 
+              title="عدد العملاء" 
+              value={stats.numCustomers} 
+              subtitle={
+                <span className="flex items-center gap-1">
+                  متوسط إنفاق: {stats.averageSpendPerCustomer.toFixed(2)}
+                  <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-3 h-3 object-contain" />
+                </span>
+              } 
+              icon={Wallet} 
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -402,6 +439,7 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+
 
 
 

@@ -139,14 +139,23 @@ export const MenuItemCard = ({
                 <div className="flex items-center justify-between gap-3 pt-2 border-t border-tastia-cream/20">
                     {/* Price Section */}
                     <div className="flex items-center gap-2">
-                        <div className="bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream px-4 py-2 rounded-full shadow-lg">
+                        <div className="bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream px-4 py-2 rounded-full shadow-lg flex items-center gap-1">
                             <span className="font-bold text-base">{actualPrice}</span>
-                            <span className="text-sm mr-1">ر.س</span>
+                            <img 
+                                src="/رمز العملة السعودية.svg" 
+                                alt="ريال سعودي" 
+                                className="w-5 h-5 object-contain"
+                            />
                         </div>
 
                         {hasDiscount && (
-                            <div className="text-tastia-cream/50 text-sm line-through">
-                                {oldPrice} ر.س
+                            <div className="text-tastia-cream/50 text-sm line-through flex items-center gap-1">
+                                {oldPrice}
+                                <img 
+                                    src="/رمز العملة السعودية.svg" 
+                                    alt="ريال سعودي" 
+                                    className="w-4 h-4 object-contain opacity-50"
+                                />
                             </div>
                         )}
                     </div>

@@ -196,7 +196,14 @@ export const CartModal = () => {
                                             {/* Details */}
                                             <div className="flex-1">
                                                 <h3 className="text-tastia-cream font-bold">{item.name}</h3>
-                                                <p className="text-tastia-secondary font-bold">{item.price} ر.س</p>
+                                                <p className="text-tastia-secondary font-bold flex items-center gap-1">
+                                                    {item.price}
+                                                    <img 
+                                                        src="/رمز العملة السعودية.svg" 
+                                                        alt="ريال سعودي" 
+                                                        className="w-4 h-4 object-contain"
+                                                    />
+                                                </p>
                                             </div>
 
                                             {/* Quantity Controls */}
@@ -238,7 +245,7 @@ export const CartModal = () => {
                             <div className="p-4 border-t border-tastia-secondary/30 bg-tastia-dark flex-shrink-0">
                                 {/* Tips Input */}
                                 <div className="mb-4">
-                                    <label className="block text-tastia-cream/70 text-sm mb-2">البقشيش (اختياري)</label>
+                                    <label className="block text-tastia-cream/70 text-sm mb-2">اكرامية لطاقم العمل (اختياري)</label>
                                     <input
                                         type="number"
                                         min="0"
@@ -257,17 +264,38 @@ export const CartModal = () => {
                                 <div className="space-y-2 mb-4">
                                     <div className="flex items-center justify-between">
                                     <span className="text-tastia-cream/70">المجموع</span>
-                                        <span className="text-tastia-cream text-lg font-bold">{state.totalPrice.toFixed(2)} ر.س</span>
+                                        <span className="text-tastia-cream text-lg font-bold flex items-center gap-1">
+                                            {state.totalPrice.toFixed(2)}
+                                            <img 
+                                                src="/رمز العملة السعودية.svg" 
+                                                alt="ريال سعودي" 
+                                                className="w-4 h-4 object-contain"
+                                            />
+                                        </span>
                                     </div>
                                     {tips > 0 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-tastia-cream/70">البقشيش</span>
-                                            <span className="text-tastia-cream text-lg font-bold">{tips.toFixed(2)} ر.س</span>
+                                            <span className="text-tastia-cream/70">اكرامية لطاقم العمل</span>
+                                            <span className="text-tastia-cream text-lg font-bold flex items-center gap-1">
+                                                {tips.toFixed(2)}
+                                                <img 
+                                                    src="/رمز العملة السعودية.svg" 
+                                                    alt="ريال سعودي" 
+                                                    className="w-4 h-4 object-contain"
+                                                />
+                                            </span>
                                         </div>
                                     )}
                                     <div className="flex items-center justify-between pt-2 border-t border-tastia-secondary/30">
                                         <span className="text-tastia-cream font-bold">المجموع النهائي</span>
-                                        <span className="text-tastia-secondary text-2xl font-bold">{finalTotal.toFixed(2)} ر.س</span>
+                                        <span className="text-tastia-secondary text-2xl font-bold flex items-center gap-1">
+                                            {finalTotal.toFixed(2)}
+                                            <img 
+                                                src="/رمز العملة السعودية.svg" 
+                                                alt="ريال سعودي" 
+                                                className="w-5 h-5 object-contain"
+                                            />
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="flex gap-3">

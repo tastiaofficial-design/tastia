@@ -310,13 +310,15 @@ export default function ItemsPage() {
                 )}
 
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex gap-2">
-                    <span className="text-2xl font-bold text-tastia-cream">
-                      {item.discountPrice || item.price} ر.س
+                  <div className="flex gap-2 items-center">
+                    <span className="text-2xl font-bold text-tastia-cream flex items-center gap-1">
+                      {item.discountPrice || item.price}
+                      <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-5 h-5 object-contain" />
                     </span>
                     {item.discountPrice && (
-                      <span className="text-lg text-tastia-cream/50 line-through">
-                        {item.price} ر.س
+                      <span className="text-lg text-tastia-cream/50 line-through flex items-center gap-1">
+                        {item.price}
+                        <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-4 h-4 object-contain opacity-50" />
                       </span>
                     )}
                   </div>
@@ -611,6 +613,7 @@ export default function ItemsPage() {
     </div>
   );
 }
+
 
 
 
