@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { List, Grid3X3 } from "lucide-react";
-import { CartIcon, CartModal } from "@/components/CartComponents";
 import { RestaurantMenuHeader } from "@/components/RestaurantMenuHeader";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { MenuItemsList } from "@/components/MenuItemsList";
 import { MenuPageSkeleton } from "@/components/SkeletonLoader";
 import { SearchBar } from "@/components/SearchBar";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { useCart } from "@/contexts/CartContext";
+
 import { useCachedFetch } from "@/hooks/useCachedFetch";
 import { motion } from "framer-motion";
 
@@ -42,7 +41,6 @@ interface MenuItem {
 }
 
 export default function Menu() {
-    const { dispatch } = useCart();
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
@@ -101,7 +99,7 @@ export default function Menu() {
         if (itemsCached) {
             console.log('عناصر القائمة محملة من الذاكرة المؤقتة');
         }
-        
+
         // Debug logging
         if (categoriesData) {
             console.log('Categories loaded:', categoriesData.length, categoriesData);
@@ -126,25 +124,7 @@ export default function Menu() {
         }
     };
 
-    const handleItemClick = (itemId: string) => {
-        const item = menuItems.find(item => item._id === itemId);
-        if (item) {
-            const actualPrice = item.discountPrice && item.discountPrice < item.price
-                ? item.discountPrice
-                : item.price;
 
-            dispatch({
-                type: 'ADD_ITEM',
-                payload: {
-                    id: item._id,
-                    name: item.name,
-                    nameEn: item.nameEn,
-                    price: actualPrice,
-                    image: item.image,
-                }
-            });
-        }
-    };
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
@@ -253,8 +233,8 @@ export default function Menu() {
                                         <button
                                             onClick={() => setViewMode('list')}
                                             className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'list'
-                                                    ? 'bg-tastia-primary text-tastia-cream'
-                                                    : 'text-tastia-cream/60 hover:text-tastia-cream/80'
+                                                ? 'bg-tastia-primary text-tastia-cream'
+                                                : 'text-tastia-cream/60 hover:text-tastia-cream/80'
                                                 }`}
                                         >
                                             <List className="w-4 h-4" />
@@ -263,8 +243,8 @@ export default function Menu() {
                                         <button
                                             onClick={() => setViewMode('grid')}
                                             className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'grid'
-                                                    ? 'bg-tastia-primary text-tastia-cream'
-                                                    : 'text-tastia-cream/60 hover:text-tastia-cream/80'
+                                                ? 'bg-tastia-primary text-tastia-cream'
+                                                : 'text-tastia-cream/60 hover:text-tastia-cream/80'
                                                 }`}
                                         >
                                             <Grid3X3 className="w-4 h-4" />
@@ -288,7 +268,6 @@ export default function Menu() {
                                 <div className="md:backdrop-blur-sm md:bg-tastia-dark/85">
                                     <MenuItemsList
                                         items={filteredMenuItems}
-                                        onAddToCart={handleItemClick}
                                         categories={categories}
                                         showGrouped={selectedCategory === null && !searchQuery.trim()}
                                         selectedCategory={selectedCategory}
@@ -301,11 +280,7 @@ export default function Menu() {
                 </ErrorBoundary>
             )}
 
-            {/* Cart Components */}
-            <div className="fixed top-6 right-6 z-40">
-                <CartIcon />
-            </div>
-            <CartModal />
+
         </div>
     );
 }

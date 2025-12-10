@@ -1,9 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useCart } from "@/contexts/CartContext";
 import React, { useState } from "react";
-import { ShoppingCart, Flame, Clock } from "lucide-react";
+import { Flame, Clock } from "lucide-react";
 
 interface MenuItemCardProps {
     id?: string;
@@ -34,22 +33,7 @@ export const MenuItemCard = ({
     calories,
     preparationTime,
 }: MenuItemCardProps) => {
-    const { dispatch } = useCart();
     const [imageError, setImageError] = useState(false);
-
-    const handleAddToCart = () => {
-        dispatch({
-            type: 'ADD_ITEM',
-            payload: {
-                id: id || `${nameAr}-${nameEn}`,
-                name: nameAr,
-                nameEn,
-                price,
-                image,
-                category,
-            }
-        });
-    };
 
     const actualPrice = oldPrice && oldPrice > price ? price : price;
     const hasDiscount = oldPrice && oldPrice > price;
@@ -141,9 +125,9 @@ export const MenuItemCard = ({
                     <div className="flex items-center gap-2">
                         <div className="bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream px-4 py-2 rounded-full shadow-lg flex items-center gap-1">
                             <span className="font-bold text-base">{actualPrice}</span>
-                            <img 
-                                src="/رمز العملة السعودية.svg" 
-                                alt="ريال سعودي" 
+                            <img
+                                src="/رمز العملة السعودية.svg"
+                                alt="ريال سعودي"
                                 className="w-5 h-5 object-contain"
                             />
                         </div>
@@ -151,27 +135,14 @@ export const MenuItemCard = ({
                         {hasDiscount && (
                             <div className="text-tastia-cream/50 text-sm line-through flex items-center gap-1">
                                 {oldPrice}
-                                <img 
-                                    src="/رمز العملة السعودية.svg" 
-                                    alt="ريال سعودي" 
+                                <img
+                                    src="/رمز العملة السعودية.svg"
+                                    alt="ريال سعودي"
                                     className="w-4 h-4 object-contain opacity-50"
                                 />
                             </div>
                         )}
                     </div>
-
-                    {/* Action Buttons */}
-                    {status !== 'inactive' && (
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={handleAddToCart}
-                                className="relative overflow-hidden bg-gradient-to-r from-tastia-secondary to-tastia-primary hover:brightness-110 text-tastia-cream px-5 py-2.5 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 shadow-lg hover:scale-105 hover:shadow-xl"
-                            >
-                                <ShoppingCart className="w-4 h-4" />
-                                <span className="relative z-10">أضف للسلة</span>
-                            </button>
-                        </div>
-                    )}
 
                     {/* Out of stock badge */}
                     {status === 'out' && (

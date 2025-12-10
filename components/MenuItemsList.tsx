@@ -25,7 +25,6 @@ interface Category {
 
 interface MenuItemsListProps {
     items: MenuItem[];
-    onAddToCart: (itemId: string) => void;
     categories: Category[];
     showGrouped?: boolean;
     selectedCategory?: string | null;
@@ -34,7 +33,6 @@ interface MenuItemsListProps {
 
 export const MenuItemsList = ({
     items,
-    onAddToCart,
     categories,
     showGrouped = false,
     selectedCategory,
@@ -89,8 +87,8 @@ export const MenuItemsList = ({
     const renderItems = (itemsToRender: MenuItem[]) => (
         <motion.div
             className={`grid gap-4 ${viewMode === 'grid'
-                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                    : 'grid-cols-1'
+                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                : 'grid-cols-1'
                 }`}
             variants={containerVariants}
             initial="hidden"
