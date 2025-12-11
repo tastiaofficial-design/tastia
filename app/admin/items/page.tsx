@@ -41,6 +41,15 @@ export default function ItemsPage() {
     fetchData();
   }, []);
 
+  const parseResponse = async (res: Response) => {
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      return res.json();
+    }
+    const text = await res.text();
+    return { success: false, error: text || `Unexpected response (${res.status})` };
+  };
+
   const fetchData = async () => {
     try {
       const [itemsRes, categoriesRes] = await Promise.all([
@@ -91,13 +100,13 @@ export default function ItemsPage() {
         body: JSON.stringify(sanitized),
       });
 
-      const data = await res.json();
-      if (data.success) {
+      const data = await parseResponse(res);
+      if (res.ok && data.success) {
         fetchData();
         handleCloseModal();
         setErrorMessage('');
       } else {
-        const msg = data.error || 'حدث خطأ غير متوقع، حاول مرة أخرى';
+        const msg = data.error || res.statusText || 'حدث خطأ غير متوقع، حاول مرة أخرى';
         setErrorMessage(msg);
         console.error('API error:', msg);
       }
@@ -112,9 +121,11 @@ export default function ItemsPage() {
 
     try {
       const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (data.success) {
+      const data = await parseResponse(res);
+      if (res.ok && data.success) {
         fetchData();
+      } else {
+        console.error('API delete error:', data.error || res.statusText);
       }
     } catch (error) {
       console.error('Error deleting item:', error);

@@ -1,7 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Category from '@/lib/models/Category';
 import { cache } from '@/lib/cache';
+import { jsonWithCors, optionsResponse } from '@/lib/api-helpers';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // GET single category
 export async function GET(
@@ -13,15 +17,15 @@ export async function GET(
         const category = await Category.findById(params.id).lean();
 
         if (!category) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { success: false, error: 'التصنيف غير موجود' },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json({ success: true, data: category });
+        return jsonWithCors({ success: true, data: category });
     } catch (error: any) {
-        return NextResponse.json(
+        return jsonWithCors(
             { success: false, error: error.message },
             { status: 400 }
         );
@@ -44,7 +48,7 @@ export async function PUT(
         );
 
         if (!category) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { success: false, error: 'التصنيف غير موجود' },
                 { status: 404 }
             );
@@ -52,7 +56,7 @@ export async function PUT(
 
         cache.clear();
 
-        return NextResponse.json(
+        return jsonWithCors(
             { success: true, data: category },
             {
                 headers: {
@@ -61,7 +65,7 @@ export async function PUT(
             }
         );
     } catch (error: any) {
-        return NextResponse.json(
+        return jsonWithCors(
             { success: false, error: error.message },
             { status: 400 }
         );
@@ -78,7 +82,7 @@ export async function DELETE(
         const category = await Category.findByIdAndDelete(params.id);
 
         if (!category) {
-            return NextResponse.json(
+            return jsonWithCors(
                 { success: false, error: 'التصنيف غير موجود' },
                 { status: 404 }
             );
@@ -86,7 +90,7 @@ export async function DELETE(
 
         cache.clear();
 
-        return NextResponse.json(
+        return jsonWithCors(
             { success: true, data: {} },
             {
                 headers: {
@@ -95,9 +99,14 @@ export async function DELETE(
             }
         );
     } catch (error: any) {
-        return NextResponse.json(
+        return jsonWithCors(
             { success: false, error: error.message },
             { status: 400 }
         );
     }
+}
+
+// OPTIONS (CORS / preflight)
+export function OPTIONS() {
+    return optionsResponse();
 }

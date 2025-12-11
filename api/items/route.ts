@@ -1,8 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MenuItem from '@/lib/models/MenuItem';
 import { CacheInvalidation, noCacheHeaders } from '@/lib/cache-invalidation';
 import { cache, CacheTTL } from '@/lib/cache';
+import { jsonWithCors, optionsResponse } from '@/lib/api-helpers';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // GET all menu items
 export async function GET(request: NextRequest) {
@@ -18,7 +22,7 @@ export async function GET(request: NextRequest) {
         if (!isAdmin) {
             const cachedData = cache.get(cacheKey);
             if (cachedData) {
-                return NextResponse.json(
+                return jsonWithCors(
                     { success: true, data: cachedData, cached: true },
                     {
                         headers: {
@@ -67,13 +71,13 @@ export async function GET(request: NextRequest) {
             headers['X-Cache-Status'] = 'MISS';
         }
 
-        return NextResponse.json(
+        return jsonWithCors(
             { success: true, data: items },
             { headers }
         );
     } catch (error: any) {
         console.error('❌ خطأ في API:', error);
-        return NextResponse.json(
+        return jsonWithCors(
             { success: false, error: error.message },
             { status: 400 }
         );
@@ -89,14 +93,19 @@ export async function POST(request: NextRequest) {
 
         CacheInvalidation.items();
 
-        return NextResponse.json(
+        return jsonWithCors(
             { success: true, data: item },
             { status: 201, headers: noCacheHeaders() }
         );
     } catch (error: any) {
-        return NextResponse.json(
+        return jsonWithCors(
             { success: false, error: error.message },
             { status: 400 }
         );
     }
+}
+
+// OPTIONS (CORS / preflight)
+export function OPTIONS() {
+    return optionsResponse();
 }

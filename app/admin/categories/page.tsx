@@ -25,6 +25,15 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
+  const parseResponse = async (res: Response) => {
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      return res.json();
+    }
+    const text = await res.text();
+    return { success: false, error: text || `Unexpected response (${res.status})` };
+  };
+
   const fetchCategories = async () => {
     try {
       const timestamp = Date.now();
@@ -64,14 +73,15 @@ export default function CategoriesPage() {
         body: JSON.stringify(submitData),
       });
 
-      const data = await res.json();
+      const data = await parseResponse(res);
 
-      if (data.success) {
+      if (res.ok && data.success) {
         fetchCategories();
         handleCloseModal();
       } else {
-        console.error('API Error:', data.error);
-        alert(`خطأ: ${data.error}`);
+        const msg = data.error || res.statusText || 'حدث خطأ أثناء الحفظ';
+        console.error('API Error:', msg);
+        alert(`خطأ: ${msg}`);
       }
     } catch (error) {
       console.error('Error saving category:', error);
@@ -84,9 +94,11 @@ export default function CategoriesPage() {
 
     try {
       const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (data.success) {
+      const data = await parseResponse(res);
+      if (res.ok && data.success) {
         fetchCategories();
+      } else {
+        console.error('API delete error:', data.error || res.statusText);
       }
     } catch (error) {
       console.error('Error deleting category:', error);
