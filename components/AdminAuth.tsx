@@ -108,7 +108,7 @@ export function AdminAuth({ children }: AdminAuthProps) {
       {/* Admin Header */}
       <div className="bg-white/10 backdrop-blur-lg border-b border-tastia-secondary/30 p-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-tastia-cream text-xl font-bold">لوحة إدارة تاستيا</h1>
+          <h1 className="text-tastia-cream text-xl font-bold">لوحة إدارة تستيا</h1>
           <button
             onClick={handleLogout}
             className="bg-red-500/20 hover:bg-red-500/30 text-red-300 px-4 py-2 rounded-lg transition-colors"

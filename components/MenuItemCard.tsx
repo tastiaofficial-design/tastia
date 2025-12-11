@@ -1,8 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Flame, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const parsePositiveNumber = (value: number | string | undefined | null) => {
+    const num = Number(value);
+    return Number.isFinite(num) && num > 0 ? num : null;
+};
 
 interface MenuItemCardProps {
     id?: string;
@@ -34,6 +39,8 @@ export const MenuItemCard = ({
     preparationTime,
 }: MenuItemCardProps) => {
     const [imageError, setImageError] = useState(false);
+    const caloriesValue = parsePositiveNumber(calories);
+    const prepTimeValue = parsePositiveNumber(preparationTime);
 
     const actualPrice = oldPrice && oldPrice > price ? price : price;
     const hasDiscount = oldPrice && oldPrice > price;
@@ -98,20 +105,20 @@ export const MenuItemCard = ({
 
                         {/* Meta Info Row */}
                         <div className="flex items-center gap-2 flex-wrap">
-                            {calories !== undefined && calories > 0 && (
+                            {caloriesValue !== null && (
                                 <div className="flex items-center gap-1 bg-tastia-dark/50 px-2 py-1 rounded-full">
                                     <Flame className="w-3.5 h-3.5 text-orange-400" />
                                     <span className="text-tastia-cream/90 text-xs font-medium">
-                                        {calories} سعر
+                                        {caloriesValue} سعر
                                     </span>
                                 </div>
                             )}
 
-                            {preparationTime !== undefined && preparationTime > 0 && (
+                            {prepTimeValue !== null && (
                                 <div className="flex items-center gap-1 bg-tastia-dark/50 px-2 py-1 rounded-full">
                                     <Clock className="w-3.5 h-3.5 text-blue-400" />
                                     <span className="text-tastia-cream/90 text-xs font-medium">
-                                        {preparationTime} دقيقة
+                                        {prepTimeValue} دقيقة
                                     </span>
                                 </div>
                             )}

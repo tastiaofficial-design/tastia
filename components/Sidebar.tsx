@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -45,13 +46,19 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
                             {/* Logo */}
                             <div className="text-center py-8">
-                                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-tastia-primary border-2 border-tastia-secondary flex items-center justify-center">
-                                    <span className="text-3xl font-bold text-tastia-cream">T</span>
+                                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-tastia-primary border-2 border-tastia-secondary flex items-center justify-center overflow-hidden">
+                                    <Image
+                                        src="/tastia-logo.png"
+                                        alt="Tastia Logo"
+                                        width={96}
+                                        height={96}
+                                        className="object-contain -rotate-45"
+                                        priority
+                                    />
                                 </div>
                                 <h1 className="arabic-title text-2xl text-tastia-cream text-shadow">
-                                    تاستيا
+                                    تستيا
                                 </h1>
-                                <p className="text-tastia-cream/70 text-sm mt-1">مصنوع للاستمتاع</p>
                             </div>
 
                             {/* Navigation Items */}
@@ -72,12 +79,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 ))}
                             </nav>
 
-                            {/* Footer */}
-                            <div className="pt-6 pb-2 text-center">
-                                <p className="text-tastia-cream/50 text-xs">
-                                    MADE TO ENJOY
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>

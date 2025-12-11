@@ -158,7 +158,7 @@ export default function Menu() {
 
     return (
         <div
-            className="min-h-screen relative overflow-hidden font-['Cairo'] bg-tastia-dark"
+            className="min-h-screen relative overflow-hidden font-['Cairo'] bg-[#f1e7d9]"
             dir="rtl"
         >
             {loading ? (

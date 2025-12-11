@@ -34,7 +34,7 @@ export const CategoriesSection = ({ categories, onCategoryClick, selectedCategor
 
     return (
         <div className="px-4 mb-6">
-            <h2 className="text-tastia-cream text-lg font-bold mb-4 text-center">التصنيفات</h2>
+            <h2 className="text-[#5a2c1f] text-lg font-bold mb-4 text-center">التصنيفات</h2>
             <motion.div
                 className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide"
                 variants={listVariants}
@@ -57,7 +57,7 @@ export const CategoriesSection = ({ categories, onCategoryClick, selectedCategor
                             <span className="text-tastia-cream text-lg font-bold">الكل</span>
                         </div>
                     </div>
-                    <p className="text-tastia-cream text-xs text-center mt-2 font-medium">
+                    <p className="text-[#5a2c1f] text-xs text-center mt-2 font-medium">
                         الكل
                     </p>
                 </motion.div>
@@ -83,7 +83,7 @@ export const CategoriesSection = ({ categories, onCategoryClick, selectedCategor
                                 {offersCount}
                             </div>
                         </div>
-                        <p className="text-tastia-cream text-xs text-center mt-2 font-medium">
+                        <p className="text-[#5a2c1f] text-xs text-center mt-2 font-medium">
                             العروض
                         </p>
                     </motion.div>
@@ -120,7 +120,7 @@ export const CategoriesSection = ({ categories, onCategoryClick, selectedCategor
                                 </div>
                             )}
                         </div>
-                        <p className="text-tastia-cream text-xs text-center mt-2 font-medium max-w-20 truncate">
+                        <p className="text-[#5a2c1f] text-xs text-center mt-2 font-medium max-w-20 truncate">
                             {category.name}
                         </p>
                     </motion.div>
