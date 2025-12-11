@@ -49,7 +49,7 @@ export const MenuItemCard = ({
         : 0;
 
     return (
-        <article className="group bg-tastia-primary border-2 border-tastia-secondary rounded-3xl p-5 transition-all duration-300 restaurant-menu-item">
+        <article className="group bg-[#fda766] border-2 border-tastia-secondary rounded-3xl p-5 transition-all duration-300 restaurant-menu-item text-[#5a2c1f]">
             <div className="flex flex-col gap-4">
                 {/* Top Section: Image and Info */}
                 <div className="flex items-start gap-4">
@@ -89,16 +89,16 @@ export const MenuItemCard = ({
 
                     {/* Item Details */}
                     <div className="flex-1 min-w-0">
-                        <h3 className="text-tastia-cream font-bold text-lg mb-1 leading-tight">
+                        <h3 className="text-[#5a2c1f] font-bold text-lg mb-1 leading-tight">
                             {nameAr}
                         </h3>
 
                         {nameEn && (
-                            <p className="text-tastia-cream/60 text-xs mb-1">{nameEn}</p>
+                            <p className="text-[#7a4c32] text-xs mb-1">{nameEn}</p>
                         )}
 
                         {description && (
-                            <p className="text-tastia-cream/70 text-sm leading-relaxed line-clamp-2 mb-2">
+                            <p className="text-[#5a2c1f] text-sm leading-relaxed line-clamp-2 mb-2">
                                 {description}
                             </p>
                         )}
@@ -106,18 +106,18 @@ export const MenuItemCard = ({
                         {/* Meta Info Row */}
                         <div className="flex items-center gap-2 flex-wrap">
                             {caloriesValue !== null && (
-                                <div className="flex items-center gap-1 bg-tastia-dark/50 px-2 py-1 rounded-full">
+                                <div className="flex items-center gap-1 bg-white/70 px-2 py-1 rounded-full text-[#5a2c1f]">
                                     <Flame className="w-3.5 h-3.5 text-orange-400" />
-                                    <span className="text-tastia-cream/90 text-xs font-medium">
+                                    <span className="text-xs font-medium">
                                         {caloriesValue} سعر
                                     </span>
                                 </div>
                             )}
 
                             {prepTimeValue !== null && (
-                                <div className="flex items-center gap-1 bg-tastia-dark/50 px-2 py-1 rounded-full">
+                                <div className="flex items-center gap-1 bg-white/70 px-2 py-1 rounded-full text-[#5a2c1f]">
                                     <Clock className="w-3.5 h-3.5 text-blue-400" />
-                                    <span className="text-tastia-cream/90 text-xs font-medium">
+                                    <span className="text-xs font-medium">
                                         {prepTimeValue} دقيقة
                                     </span>
                                 </div>
@@ -132,21 +132,13 @@ export const MenuItemCard = ({
                     <div className="flex items-center gap-2">
                         <div className="bg-gradient-to-r from-tastia-secondary to-tastia-primary text-tastia-cream px-4 py-2 rounded-full shadow-lg flex items-center gap-1">
                             <span className="font-bold text-base">{actualPrice}</span>
-                            <img
-                                src="/رمز العملة السعودية.svg"
-                                alt="ريال سعودي"
-                                className="w-5 h-5 object-contain"
-                            />
+                            <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-5 h-5 object-contain" />
                         </div>
 
                         {hasDiscount && (
-                            <div className="text-tastia-cream/50 text-sm line-through flex items-center gap-1">
+                            <div className="text-tastia-cream/60 text-sm line-through flex items-center gap-1">
                                 {oldPrice}
-                                <img
-                                    src="/رمز العملة السعودية.svg"
-                                    alt="ريال سعودي"
-                                    className="w-4 h-4 object-contain opacity-50"
-                                />
+                                <img src="/رمز العملة السعودية.svg" alt="ريال سعودي" className="w-4 h-4 object-contain opacity-50" />
                             </div>
                         )}
                     </div>
