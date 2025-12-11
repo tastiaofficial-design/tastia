@@ -59,7 +59,7 @@ export const RestaurantMenuHeader = () => {
                                         />
                                     </div>
                                 </div>
-                                <h1 className="text-tastia-cream text-2xl md:text-3xl font-bold tracking-wide">تيستيا</h1>
+                                <h1 className="text-tastia-cream text-2xl md:text-3xl font-bold tracking-wide">تستيا</h1>
                                 <p className="text-tastia-cream/80 text-sm md:text-base">MADE TO ENJOY</p>
 
                                 {/* Social Media Icons */}
