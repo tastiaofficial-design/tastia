@@ -34,38 +34,11 @@ const nextConfig = {
                 ],
             },
             {
-                source: '/api/categories/:path*',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, s-maxage=300, stale-while-revalidate=600',
-                    },
-                ],
-            },
-            {
-                source: '/api/items/:path*',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, s-maxage=300, stale-while-revalidate=600',
-                    },
-                ],
-            },
-            {
                 source: '/api/images/:path*',
                 headers: [
                     {
                         key: 'Cache-Control',
                         value: 'public, max-age=86400, s-maxage=86400',
-                    },
-                ],
-            },
-            {
-                source: '/api/admin/:path*',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'no-store, no-cache, must-revalidate',
                     },
                 ],
             },
