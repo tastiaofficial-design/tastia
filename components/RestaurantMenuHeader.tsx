@@ -66,7 +66,7 @@ export const RestaurantMenuHeader = () => {
                                 <div className="flex justify-center items-center gap-4 mt-4">
                                     {/* Instagram */}
                                     <a
-                                        href="https://www.instagram.com/tastia"
+                                        href="https://www.instagram.com/tastia.sa?igsh=NjQ2eHNzd3ZsYThz"
                                         target="_blank"
                                         rel="noreferrer"
                                         className="text-tastia-cream/80 hover:text-tastia-cream transition-colors duration-200"
